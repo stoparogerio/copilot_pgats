@@ -106,6 +106,7 @@ describe("Transfer Controller - External API", () => {
       "error",
       "Transferências acima de R$ 5.000,00 só para favorecidos"
     );
+    console.log("Response body:", response.body);
   });
 
   it("Deve listar as transferências realizadas em memória", async () => {
