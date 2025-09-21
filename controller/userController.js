@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const userService = require("../service/userService");
+const jwt = require("jsonwebtoken");
+
+const SECRET = "seuSegredoSuperSecreto";
 
 router.post("/register", (req, res) => {
   const { username, password, favorecidos } = req.body;
@@ -24,7 +27,12 @@ router.post("/login", (req, res) => {
   }
   try {
     const user = userService.authenticateUser(username, password);
+    // Gera o token JWT
+    const token = jwt.sign({ username: user.username }, SECRET, {
+      expiresIn: "1h",
+    });
     res.json({
+      token,
       username: user.username,
       favorecidos: user.favorecidos,
       saldo: user.saldo,
