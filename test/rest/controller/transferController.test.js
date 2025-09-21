@@ -102,6 +102,18 @@ describe("Transfer Controller", () => {
       console.log("Response body:", response.body);
     });
 
+    it("Não permite transferência >= 5000 para não favorecido", async () => {
+      const response = await request(app)
+        .post("/transfers")
+        .set("Authorization", `Bearer ${token}`)
+        .send({ from: "novoUsuario", to: "novoUsuario1", amount: 5000 });
+      expect(response.status).to.equal(400);
+      expect(response.body).to.have.property(
+        "error",
+        "Transferências acima de R$ 5.000,00 só para favorecidos"
+      );
+    });
+
     it("Deve listar as transferências realizadas em memória", async () => {
       const valores = [500, 1233, 1333];
 
