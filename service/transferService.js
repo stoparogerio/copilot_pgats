@@ -1,5 +1,5 @@
-const { users } = require("../models/userModel");
-const { transfers } = require("../models/transferModel");
+const { users } = require("../model/userModel");
+const { transfers } = require("../model/transferModel");
 
 function transfer({ from, to, amount }) {
   const sender = users.find((u) => u.username === from);

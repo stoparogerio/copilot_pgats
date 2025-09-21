@@ -1,4 +1,4 @@
-const { users } = require("../models/userModel");
+const { users } = require("../model/userModel");
 
 function findUserByUsername(username) {
   return users.find((u) => u.username === username);
