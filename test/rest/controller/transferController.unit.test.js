@@ -2,8 +2,8 @@ const request = require("supertest");
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const app = require("../../app");
-const transferService = require("../../service/transferService");
+const app = require("../../../app");
+const transferService = require("../../../service/transferService");
 
 describe("Transfer Controller - Unit", () => {
   let token;
