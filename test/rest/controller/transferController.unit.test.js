@@ -99,5 +99,6 @@ describe("Transfer Controller - Unit", () => {
       "error",
       "Transferências acima de R$ 5.000,00 só para favorecidos"
     );
+    // console.log("Response body:", response.body);
   });
 });

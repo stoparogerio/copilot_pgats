@@ -98,8 +98,8 @@ describe("Transfer Controller", () => {
       expect(response.body).to.have.property("to", "novoUsuario1");
       expect(response.body).to.have.property("amount", 1000);
 
-      console.log("Token usado:", token);
-      console.log("Response body:", response.body);
+      // console.log("Token usado:", token);
+      // console.log("Response body:", response.body);
     });
 
     it("Não permite transferência >= 5000 para não favorecido", async () => {
@@ -112,6 +112,7 @@ describe("Transfer Controller", () => {
         "error",
         "Transferências acima de R$ 5.000,00 só para favorecidos"
       );
+      // console.log("Response body:", response.body);
     });
 
     it("Deve listar as transferências realizadas em memória", async () => {
@@ -128,7 +129,7 @@ describe("Transfer Controller", () => {
         .get("/transfers")
         .set("Authorization", `Bearer ${token}`);
 
-      console.log("Listagem de transferências:", response.body);
+      // console.log("Listagem de transferências:", response.body);
 
       expect(response.status).to.equal(200);
       expect(response.body).to.be.an("array");
