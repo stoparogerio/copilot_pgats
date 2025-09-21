@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const transferService = require("../services/transferService");
+const transferService = require("../service/transferService");
 
 router.post("/", (req, res) => {
   const { from, to, amount } = req.body;

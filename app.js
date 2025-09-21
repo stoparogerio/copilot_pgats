@@ -1,8 +1,8 @@
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-const userController = require("./controllers/userController");
-const transferController = require("./controllers/transferController");
+const userController = require("./controller/userController");
+const transferController = require("./controller/transferController");
 
 const app = express();
 app.use(express.json());
