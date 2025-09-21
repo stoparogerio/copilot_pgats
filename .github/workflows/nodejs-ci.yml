@@ -20,7 +20,11 @@ jobs:
           node-version: "20.x"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          for i in 1 2 3; do
+            npm install && break
+            sleep 10
+        done
 
       - name: Run tests
         run: npm test -- --reporter spec
