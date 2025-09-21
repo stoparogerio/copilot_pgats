@@ -58,7 +58,6 @@ describe("Transfer Controller - External API", () => {
       .post("/transfers")
       .set("Authorization", `Bearer ${token}`)
       .send({ from: "novoUsuarioExt", to: "novoUsuario1Ext", amount: -1000 });
-
     expect(response.status).to.equal(400);
     expect(response.body).to.have.property(
       "error",
@@ -90,18 +89,18 @@ describe("Transfer Controller - External API", () => {
     const response = await api
       .post("/transfers")
       .set("Authorization", `Bearer ${token}`)
-      .send({ from: "novoUsuarioExt", to: "novoUsuario1Ext", amount: 1000 });
+      .send({ from: "novoUsuarioExt", to: "novoUsuario1Ext", amount: 10 });
     expect(response.status).to.equal(201);
     expect(response.body).to.have.property("from", "novoUsuarioExt");
     expect(response.body).to.have.property("to", "novoUsuario1Ext");
-    expect(response.body).to.have.property("amount", 1000);
+    expect(response.body).to.have.property("amount", 10);
   });
 
   it("Não permite transferência >= 5000 para não favorecido (external)", async () => {
     const response = await api
       .post("/transfers")
       .set("Authorization", `Bearer ${token}`)
-      .send({ from: "novoUsuarioExt", to: "novoUsuario1Ext", amount: 5000 });
+      .send({ from: "novoUsuario1Ext", to: "novoUsuarioExt", amount: 5000 });
     expect(response.status).to.equal(400);
     expect(response.body).to.have.property(
       "error",
@@ -123,7 +122,7 @@ describe("Transfer Controller - External API", () => {
       .get("/transfers")
       .set("Authorization", `Bearer ${token}`);
 
-    console.log("Listagem de transferências:", response.body);
+    // console.log("Listagem de transferências:", response.body);
 
     expect(response.status).to.equal(200);
     expect(response.body).to.be.an("array");
