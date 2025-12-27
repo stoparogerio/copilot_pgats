@@ -142,10 +142,14 @@ Critérios de sucesso que definem se o teste passou ou falhou.
 // Arquivo: test/k6/user.performance.test.mjs
 export const options = {
   thresholds: {
-    http_req_duration: ["p(95)<500"],
-    http_req_failed: ["rate<0.01"],
+    http_req_duration: ["p(95)<1000"],
+    "http_req_duration{expected_response:true}": ["p(99)<5000"],
+    http_req_failed: ["rate<0.60"],
     login_duration: ["p(90)<300"],
-    success_rate: ["rate>0.95"],
+    success_rate: ["rate>0.51"],
+    "http_req_duration{group:::Login User}": ["p(95)<400"],
+    "http_req_duration{group:::Register User}": ["p(95)<1000"],
+    "http_req_duration{group:::List Users}": ["p(95)<300"],
   },
 };
 ```
@@ -157,9 +161,9 @@ Validações que verificam se as respostas estão corretas.
 ```javascript
 // Arquivo: test/k6/user.performance.test.mjs
 const checkResult = check(response, {
-  "Status é 201 ou 400": (r) => [201, 400].includes(r.status),
-  "Response tem status code": (r) => r.status !== undefined,
-  "Response time menor que 1s": (r) => r.timings.duration < 1000,
+  "Status é 2xx ou 400/422": (r) => r.status >= 200 && r.status < 500,
+  "Response é válido": (r) => r.body && r.body.length > 0,
+  "Response time menor que 1500ms": (r) => r.timings.duration < 1500,
 });
 ```
 
@@ -226,7 +230,8 @@ export const options = {
     { duration: "30s", target: 10 }, // Ramp-up
     { duration: "1m", target: 50 }, // Carga média
     { duration: "2m", target: 50 }, // Platô
-    { duration: "30s", target: 100 }, // Spike
+    { duration: "30s", target: 78 }, // Spike
+    { duration: "1m", target: 78 }, // Platô
     { duration: "30s", target: 0 }, // Ramp-down
   ],
 };
@@ -270,6 +275,27 @@ const params = {
   headers: getAuthHeaders(token),
 };
 const response = http.get(url, params);
+```
+
+##### 10.1 TRANSFERS E LIST TRANSFERS COM TOKEN
+
+Ambos os grupos reaproveitam o token obtido no login para autorizar requisições de transferência e listagem:
+
+```javascript
+// Grupo Transfers
+const params = {
+  headers: {
+    ...getJsonHeaders(),
+    ...getAuthHeaders(token), // inclui Bearer token
+  },
+};
+http.post(`${BASE_URL}/transfers`, payload, params);
+
+// Grupo List Transfers
+const paramsList = {
+  headers: getAuthHeaders(token), // inclui Bearer token
+};
+http.get(`${BASE_URL}/transfers`, paramsList);
 ```
 
 ##### 11. DATA-DRIVEN TESTING

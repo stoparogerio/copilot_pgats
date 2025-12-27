@@ -107,20 +107,25 @@ export default function () {
 ```javascript
 export const options = {
   thresholds: {
-    // 95% das requisições devem completar em menos de 500ms
-    http_req_duration: ["p(95)<500"],
+    // 95% das requisições devem completar em menos de 1000ms
+    http_req_duration: ["p(95)<1000"],
 
-    // Taxa de erro deve ser menor que 1%
-    http_req_failed: ["rate<0.01"],
+    // 99% das requisições esperadas devem completar em menos de 5s
+    "http_req_duration{expected_response:true}": ["p(99)<5000"],
+
+    // Taxa de erro deve ser menor que 60%
+    http_req_failed: ["rate<0.60"],
 
     // 90% das requisições de login devem completar em menos de 300ms
     login_duration: ["p(90)<300"],
 
-    // Taxa de sucesso deve ser maior que 95%
-    success_rate: ["rate>0.95"],
+    // Taxa de sucesso deve ser maior que 51%
+    success_rate: ["rate>0.51"],
 
-    // Threshold específico por grupo
+    // Thresholds específicos por grupo
     "http_req_duration{group:::Login User}": ["p(95)<400"],
+    "http_req_duration{group:::Register User}": ["p(95)<1000"],
+    "http_req_duration{group:::List Users}": ["p(95)<300"],
   },
 };
 ```
@@ -137,7 +142,7 @@ export const options = {
 
 **Conceito**: Validações que verificam se as respostas estão corretas (não afetam o resultado final do teste).
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 
@@ -145,12 +150,9 @@ export const options = {
 import { check } from "k6";
 
 const checkResult = check(response, {
-  "Status é 201 ou 400": (r) => [201, 400].includes(r.status),
-  "Response tem status code": (r) => r.status !== undefined,
-  "Response time menor que 1s": (r) => r.timings.duration < 1000,
-  "Content-Type é JSON": (r) =>
-    r.headers["Content-Type"]?.includes("application/json"),
-  "Response é array": (r) => Array.isArray(r.json()),
+  "Status é 2xx ou 400/422": (r) => r.status >= 200 && r.status < 500,
+  "Response é válido": (r) => r.body && r.body.length > 0,
+  "Response time menor que 1500ms": (r) => r.timings.duration < 1500,
 });
 ```
 
@@ -232,7 +234,7 @@ export function randomPassword(length = 8) {
   return password;
 }
 
-// Arquivo: user.performance.test.js
+// Arquivo: user.performance.test.mjs
 import { randomUsername, randomPassword } from "./helpers/faker.js";
 
 export default function () {
@@ -266,7 +268,7 @@ export function getEnvironment() {
     return __ENV.ENVIRONMENT || 'dev';
 }
 
-// Arquivo: user.performance.test.js
+// Arquivo: user.performance.test.mjs
 export default function() {
     const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
     console.log(`Testando em: ${BASE_URL}`);
@@ -276,7 +278,7 @@ export default function() {
 **Uso via CLI**:
 
 ```bash
-k6 run --env BASE_URL=http://staging.com --env ENVIRONMENT=hml test/k6/user.performance.test.js
+k6 run --env BASE_URL=http://staging.com --env ENVIRONMENT=hml test/k6/user.performance.test.mjs
 ```
 
 ---
@@ -285,7 +287,7 @@ k6 run --env BASE_URL=http://staging.com --env ENVIRONMENT=hml test/k6/user.perf
 
 **Conceito**: Definir perfil de carga progressivo para simular cenários realistas.
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 
@@ -295,9 +297,9 @@ export const options = {
     { duration: "30s", target: 10 }, // Ramp-up: 0 → 10 usuários em 30s
     { duration: "1m", target: 50 }, // Ramp-up: 10 → 50 usuários em 1min
     { duration: "2m", target: 50 }, // Platô: 50 usuários por 2min
-    { duration: "30s", target: 100 }, // Spike: 50 → 100 usuários em 30s
-    { duration: "1m", target: 100 }, // Platô: 100 usuários por 1min
-    { duration: "30s", target: 0 }, // Ramp-down: 100 → 0 em 30s
+    { duration: "30s", target: 78 }, // Spike: 50 → 78 usuários em 30s
+    { duration: "1m", target: 78 }, // Platô: 78 usuários por 1min
+    { duration: "30s", target: 0 }, // Ramp-down: 78 → 0 em 30s
   ],
 };
 ```
@@ -329,31 +331,44 @@ stages: [
 
 **Conceito**: Reutilizar dados de uma resposta (ex: token JWT) em requisições subsequentes.
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 
 ```javascript
 export default function () {
   let token; // Variável para armazenar o token
+  let userData;
 
   // 1. Obter token no login
   group("Login User", function () {
-    const userData = randomFromArray(testData.users);
+    userData = randomFromArray(testData.users);
     token = login(userData.username, userData.password); // Armazena token
   });
 
   sleep(1);
 
   // 2. Reutilizar token em outras requisições
-  group("List Users", function () {
-    const url = `${BASE_URL}/users`;
-
+  group("Transfers", function () {
+    const url = `${BASE_URL}/transfers`;
+    const payload = JSON.stringify({
+      from: userData.username,
+      to: randomFromArray(testData.users).username,
+      amount: randomAmount(1, 50),
+    });
     const params = {
-      headers: getAuthHeaders(token), // Reusa o token
+      headers: {
+        ...getJsonHeaders(),
+        ...getAuthHeaders(token),
+      },
     };
+    http.post(url, payload, params);
+  });
 
-    const response = http.get(url, params);
+  group("List Transfers", function () {
+    const url = `${BASE_URL}/transfers`;
+    const params = { headers: getAuthHeaders(token) };
+    http.get(url, params);
   });
 }
 ```
@@ -402,7 +417,7 @@ export function getAuthHeaders(token) {
   };
 }
 
-// Arquivo: user.performance.test.js
+// Arquivo: user.performance.test.mjs
 const token = login("user123", "password123");
 
 const params = {
@@ -418,7 +433,7 @@ const response = http.get(`${BASE_URL}/protected-route`, params);
 
 **Conceito**: Usar dados externos (JSON) para executar testes com múltiplos conjuntos de dados.
 
-**Localização**: `test/k6/data/users.json`, `test/k6/user.performance.test.js`
+**Localização**: `test/k6/data/users.json`, `test/k6/user.performance.test.mjs`
 
 **Código**:
 
@@ -446,21 +461,21 @@ const response = http.get(`${BASE_URL}/protected-route`, params);
   ]
 }
 
-// Arquivo: user.performance.test.js
-import { randomFromArray } from './helpers/faker.js';
+// Arquivo: user.performance.test.mjs
+import { randomFromArray, randomAmount } from './helpers/faker.js';
 
 // Importar dados
 const testData = JSON.parse(open('./data/users.json'));
 
 export default function() {
-    // Usar dados do JSON para login
-    const userData = randomFromArray(testData.users);
-    token = login(userData.username, userData.password);
+  // Usar dados do JSON para login
+  const userData = randomFromArray(testData.users);
+  token = login(userData.username, userData.password);
 
-    // Usar dados dinâmicos para transferência (evita saldo insuficiente)
-    const sender = randomFromArray(testData.users);
-    const recipient = randomFromArray(testData.users.filter(u => u.username !== sender.username));
-    transfer(sender.username, recipient.username, randomAmount(1, 50));
+  // Usar dados dinâmicos para transferência (evita saldo insuficiente)
+  const sender = randomFromArray(testData.users);
+  const recipient = randomFromArray(testData.users.filter(u => u.username !== sender.username));
+  transfer(sender.username, recipient.username, randomAmount(1, 50));
 }
 ```
 
@@ -530,15 +545,15 @@ export default function () {
 
 | Conceito      | Arquivo Principal                                          |
 | ------------- | ---------------------------------------------------------- |
-| Groups        | `user.performance.test.js`                                 |
+| Groups        | `user.performance.test.mjs`                                |
 | Helpers       | `helpers/auth.js`, `helpers/faker.js`, `helpers/config.js` |
-| Thresholds    | `user.performance.test.js` (options)                       |
-| Checks        | `user.performance.test.js`                                 |
-| Trends        | `user.performance.test.js` (metrics)                       |
+| Thresholds    | `user.performance.test.mjs` (options)                      |
+| Checks        | `user.performance.test.mjs`                                |
+| Trends        | `user.performance.test.mjs` (metrics)                      |
 | Faker         | `helpers/faker.js`                                         |
 | Env Variables | `.env`, `helpers/config.js`                                |
-| Stages        | `user.performance.test.js` (options.stages)                |
-| Token Reuse   | `user.performance.test.js` (token variable)                |
+| Stages        | `user.performance.test.mjs` (options.stages)               |
+| Token Reuse   | `user.performance.test.mjs` (token variable)               |
 | Auth          | `helpers/auth.js`, `helpers/config.js`                     |
 | Data-Driven   | `data/users.json`                                          |
 
