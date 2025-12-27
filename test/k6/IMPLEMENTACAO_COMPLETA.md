@@ -364,13 +364,17 @@ Abra o arquivo HTML gerado em `test/k6/reports/`
       - Faz checks
 
    d. Group: Transfers
-      - Usa data-driven (transfers)
-      - Usa faker (randomAmount)
+      - Usa data-driven (users, não transfers fixos)
+      - Usa faker (randomAmount entre 1-50)
+      - Usa auth headers (token)
       - Adiciona métrica (transferTrend)
-      - Faz checks
+      - Faz checks tolerantes (2xx/4xx)
 
    e. Group: List Transfers
-      - Faz checks
+      - Reutiliza token do login
+      - Usa auth headers
+      - Faz checks tolerantes
+      - Adiciona métrica (successRate)
 4. Teardown é executado (uma vez)
 5. Relatório HTML/JSON é gerado
 ```

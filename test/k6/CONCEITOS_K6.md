@@ -453,13 +453,14 @@ import { randomFromArray } from './helpers/faker.js';
 const testData = JSON.parse(open('./data/users.json'));
 
 export default function() {
-    // Usar dados do JSON
+    // Usar dados do JSON para login
     const userData = randomFromArray(testData.users);
     token = login(userData.username, userData.password);
 
-    // Usar dados de transferência
-    const transferData = randomFromArray(testData.transfers);
-    transfer(transferData.from, transferData.to, transferData.amount);
+    // Usar dados dinâmicos para transferência (evita saldo insuficiente)
+    const sender = randomFromArray(testData.users);
+    const recipient = randomFromArray(testData.users.filter(u => u.username !== sender.username));
+    transfer(sender.username, recipient.username, randomAmount(1, 50));
 }
 ```
 
