@@ -24,7 +24,7 @@ Este documento apresenta todos os conceitos K6 implementados no projeto com exem
 
 **Conceito**: Organizar testes em blocos lógicos para melhor rastreabilidade e métricas agrupadas.
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 
@@ -80,7 +80,7 @@ export function login(username, password) {
   return response.json("token");
 }
 
-// Arquivo: user.performance.test.js
+// Arquivo: user.performance.test.mjs
 import { login } from "./helpers/auth.js";
 
 export default function () {
@@ -100,7 +100,7 @@ export default function () {
 
 **Conceito**: Critérios de sucesso que determinam se o teste passou ou falhou.
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 
@@ -165,7 +165,7 @@ const checkResult = check(response, {
 
 **Conceito**: Métricas customizadas para coletar dados de tempo de resposta específicos.
 
-**Localização**: `test/k6/user.performance.test.js`
+**Localização**: `test/k6/user.performance.test.mjs`
 
 **Código**:
 

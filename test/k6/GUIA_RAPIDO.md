@@ -142,7 +142,7 @@ Exemplo:
 
 ### Modificar Stages
 
-Edite o arquivo `test/k6/user.performance.test.js`:
+Edite o arquivo `test/k6/user.performance.test.mjs`:
 
 ```javascript
 export const options = {
@@ -175,7 +175,7 @@ ENVIRONMENT=staging
 Execute passando as variáveis:
 
 ```bash
-k6 run --env BASE_URL=http://staging.example.com --env ENVIRONMENT=staging test/k6/user.performance.test.js
+k6 run --env BASE_URL=http://staging.example.com --env ENVIRONMENT=staging test/k6/user.performance.test.mjs
 ```
 
 ---
@@ -256,22 +256,22 @@ npm run start-rest
 
 ```bash
 # 10 VUs por 30 segundos
-k6 run --vus 10 --duration 30s test/k6/user.performance.test.js
+k6 run --vus 10 --duration 30s test/k6/user.performance.test.mjs
 
 # Com variáveis de ambiente
-k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.js
+k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.mjs
 
 # Saída em JSON
-k6 run --out json=results.json test/k6/user.performance.test.js
+k6 run --out json=results.json test/k6/user.performance.test.mjs
 
 # Múltiplas saídas
-k6 run --out json=results.json --out influxdb=http://localhost:8086 test/k6/user.performance.test.js
+k6 run --out json=results.json --out influxdb=http://localhost:8086 test/k6/user.performance.test.mjs
 ```
 
 ### Executar com Stages Via CLI
 
 ```bash
-k6 run --stage 30s:10,1m:50,30s:100,1m:100,30s:0 test/k6/user.performance.test.js
+k6 run --stage 30s:10,1m:50,30s:100,1m:100,30s:0 test/k6/user.performance.test.mjs
 ```
 
 ---

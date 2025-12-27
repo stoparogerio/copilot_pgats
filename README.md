@@ -101,7 +101,7 @@ npm run k6:performance:stress
 Organizam os testes em blocos lógicos para melhor rastreabilidade.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 group("Login User", function () {
   token = login(email, password);
 });
@@ -126,7 +126,7 @@ group("Login User", function () {
 Critérios de sucesso que definem se o teste passou ou falhou.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 export const options = {
   thresholds: {
     http_req_duration: ["p(95)<500"],
@@ -142,7 +142,7 @@ export const options = {
 Validações que verificam se as respostas estão corretas.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 const checkResult = check(response, {
   "Status é 201 ou 400": (r) => [201, 400].includes(r.status),
   "Response tem status code": (r) => r.status !== undefined,
@@ -155,7 +155,7 @@ const checkResult = check(response, {
 Métricas customizadas para coletar dados de tempo de resposta.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 import { Trend } from "k6/metrics";
 
 const loginTrend = new Trend("login_duration");
@@ -207,7 +207,7 @@ const ENVIRONMENT = __ENV.ENVIRONMENT || "dev";
 Perfil de carga progressivo para simular cenários reais.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 export const options = {
   stages: [
     { duration: "30s", target: 10 }, // Ramp-up
@@ -224,7 +224,7 @@ export const options = {
 Token obtido no login é reutilizado em requisições subsequentes.
 
 ```javascript
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 let token;
 
 group("Login User", function () {
@@ -252,7 +252,7 @@ export function getAuthHeaders(token) {
   };
 }
 
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 const params = {
   headers: getAuthHeaders(token),
 };
@@ -272,7 +272,7 @@ Testes baseados em dados externos (JSON).
   ]
 }
 
-// Arquivo: test/k6/user.performance.test.js
+// Arquivo: test/k6/user.performance.test.mjs
 const testData = JSON.parse(open('./data/users.json'));
 
 export default function() {

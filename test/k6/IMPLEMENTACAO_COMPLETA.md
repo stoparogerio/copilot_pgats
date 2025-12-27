@@ -4,7 +4,7 @@
 
 ```
 test/k6/
-├── user.performance.test.js    # Teste principal com todos os conceitos
+├── user.performance.test.mjs   # Teste principal com todos os conceitos
 ├── .env                        # Variáveis de ambiente (dev)
 ├── .env.example               # Exemplo de configuração
 ├── GUIA_RAPIDO.md            # Guia de início rápido
@@ -41,7 +41,7 @@ test/k6/
 
 ### ✅ 3. THRESHOLDS
 
-- **Arquivo**: `user.performance.test.js` (options.thresholds)
+- **Arquivo**: `user.performance.test.mjs` (options.thresholds)
 - **Implementação**: 7 thresholds diferentes
   - `http_req_duration: p(95)<500`
   - `http_req_failed: rate<0.01`
@@ -91,7 +91,7 @@ test/k6/
 
 ### ✅ 8. STAGES
 
-- **Arquivo**: `user.performance.test.js` (options.stages)
+- **Arquivo**: `user.performance.test.mjs` (options.stages)
 - **Implementação**: 6 stages simulando cenário real
   - Ramp-up gradual
   - Platôs de estabilização
@@ -115,7 +115,7 @@ test/k6/
 
 ### ✅ 11. DATA-DRIVEN TESTING
 
-- **Arquivos**: `data/users.json`, `user.performance.test.js`
+- **Arquivos**: `data/users.json`, `user.performance.test.mjs`
 - **Implementação**:
   - 5 usuários de teste
   - 3 transferências de exemplo
@@ -251,7 +251,7 @@ test/k6/reports/
 
 ### Teste Principal
 
-- [x] `user.performance.test.js` criado
+- [x] `user.performance.test.mjs` criado
 - [x] Todos os 11 conceitos implementados
 - [x] Função `handleSummary()` para relatórios
 

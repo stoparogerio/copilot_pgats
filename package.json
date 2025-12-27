@@ -8,11 +8,11 @@
     "test-rest-external": "mocha test/rest/external/**/*.test.js --timeout 10000 --reporter mochawesome",
     "test-rest-controller": "mocha test/rest/controller/**/*.test.js --timeout 10000 --reporter mochawesome",
     "start-rest": "node server.js",
-    "k6:performance": "k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.js",
-    "k6:performance:hml": "k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.js",
-    "k6:performance:smoke": "k6 run --vus 1 --duration 30s --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.js",
-    "k6:performance:load": "k6 run --vus 50 --duration 5m --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.js",
-    "k6:performance:stress": "k6 run --vus 100 --duration 10m --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.js"
+    "k6:performance": "k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.mjs",
+    "k6:performance:hml": "k6 run --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.mjs",
+    "k6:performance:smoke": "k6 run --vus 1 --duration 30s --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=dev test/k6/user.performance.test.mjs",
+    "k6:performance:load": "k6 run --vus 50 --duration 5m --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.mjs",
+    "k6:performance:stress": "k6 run --vus 100 --duration 10m --env BASE_URL=http://localhost:3000 --env ENVIRONMENT=hml test/k6/user.performance.test.mjs"
   },
   "keywords": [],
   "author": "",
