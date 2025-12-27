@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "username": "user_test_001",
+      "password": "password123",
+      "favorecidos": ["user_test_002", "user_test_003"]
+    },
+    {
+      "username": "user_test_002",
+      "password": "password456",
+      "favorecidos": ["user_test_001"]
+    },
+    {
+      "username": "user_test_003",
+      "password": "password789",
+      "favorecidos": ["user_test_001", "user_test_002"]
+    },
+    {
+      "username": "user_test_004",
+      "password": "password321",
+      "favorecidos": []
+    },
+    {
+      "username": "user_test_005",
+      "password": "password654",
+      "favorecidos": ["user_test_001"]
+    }
+  ],
+  "transfers": [
+    {
+      "from": "user_test_001",
+      "to": "user_test_002",
+      "amount": 100.5
+    },
+    {
+      "from": "user_test_002",
+      "to": "user_test_003",
+      "amount": 250.0
+    },
+    {
+      "from": "user_test_003",
+      "to": "user_test_001",
+      "amount": 75.25
+    }
+  ]
+}
