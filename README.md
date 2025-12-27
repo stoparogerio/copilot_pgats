@@ -14,11 +14,11 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 1. Clone o repositório ou copie os arquivos para seu ambiente.
 2. Instale as dependências:
    ```sh
-   npm install express swagger-ui-express
+   npm install
    ```
 3. Inicie o servidor:
    ```sh
-   node server.js
+   npm run start-rest
    ```
 
 ## Endpoints
@@ -54,7 +54,20 @@ Acesse a documentação interativa do Swagger em: [http://localhost:3000/api-doc
 
 ## Testes
 
-Para testar a API, utilize ferramentas como Postman, Insomnia ou scripts automatizados (ex: Supertest).
+Para rodar os testes automatizados:
+
+```sh
+# Rodar todos os testes
+npm test
+
+# Rodar apenas testes de controller
+npm run test-rest-controller
+
+# Rodar apenas testes externos (via HTTP)
+npm run test-rest-external
+```
+
+Para testar a API manualmente, utilize ferramentas como Postman, Insomnia ou scripts automatizados (ex: Supertest).
 
 ### Testes Funcionais (Mocha/Chai)
 
