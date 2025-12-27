@@ -1,0 +1,6 @@
+# Ignorar relatórios gerados (manter apenas README.md)
+*.html
+*.json
+
+# Manter o README
+!README.md
