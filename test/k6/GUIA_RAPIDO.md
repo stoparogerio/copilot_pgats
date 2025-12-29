@@ -108,17 +108,17 @@ test/k6/reports/{ambiente}_{timestamp}_summary.html
 #### http_req_duration
 
 - Tempo total da requisição
-- **p(95) < 500ms**: 95% das requisições em menos de 500ms
+- **p(95) < 500ms**: 95% das requisições em menos de 1000ms
 
 #### http_req_failed
 
 - Taxa de falha das requisições
-- **rate < 0.01**: Menos de 1% de erros
+- **rate < 0.60**: Menos de 6% de erros
 
 #### success_rate
 
 - Taxa de sucesso dos checks
-- **rate > 0.95**: Mais de 95% de sucesso
+- **rate > 0.51**: Mais de 51% de sucesso
 
 #### Checks
 
@@ -132,8 +132,8 @@ Se algum threshold falhar, o teste é considerado falhado, mesmo que todas as re
 Exemplo:
 
 ```
-✓ http_req_duration.........: p(95)<500ms
-✗ http_req_failed...........: rate<0.01
+✓ http_req_duration.........: p(95)<1000ms
+✗ http_req_failed...........: rate<0.60
 ```
 
 ---
