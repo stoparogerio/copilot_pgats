@@ -43,10 +43,10 @@ test/k6/
 
 - **Arquivo**: `user.performance.test.mjs` (options.thresholds)
 - **Implementação**: 7 thresholds diferentes
-  - `http_req_duration: p(95)<500`
-  - `http_req_failed: rate<0.01`
+  - `http_req_duration: p(95)<1000`
+  - `http_req_failed: rate<0.60`
   - `login_duration: p(90)<300`
-  - `success_rate: rate>0.95`
+  - `success_rate: rate>0.51`
   - Thresholds específicos por grupo
 - **Benefício**: Critérios claros de sucesso/falha
 
